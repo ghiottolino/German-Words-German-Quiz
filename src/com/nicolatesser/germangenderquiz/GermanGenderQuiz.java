@@ -16,6 +16,7 @@ import java.util.Vector;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.View;
@@ -38,15 +39,14 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	private Gender currentGender;
 
 	private String currentWord;
-	
-	private Map<String,Gender> words;
-	
-	private Integer consecutive = 0;
-	
-	private Integer correctAttempts = 0;
-	
-	private Integer totalAttempts = 0;
 
+	private Map<String, Gender> words;
+
+	private Integer consecutive = 0;
+
+	private Integer correctAttempts = 0;
+
+	private Integer totalAttempts = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,70 +64,64 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 			loadMap2();
 		}
 		initTest();
-		
+
 		updateTotalResult();
 		updateConsecutiveResult();
-		
-       ((Button)findViewById(R.id.der)).setOnClickListener(this);
-       ((Button)findViewById(R.id.das)).setOnClickListener(this);
-       ((Button)findViewById(R.id.die)).setOnClickListener(this);
 
-		
+		((Button) findViewById(R.id.der)).setOnClickListener(this);
+		((Button) findViewById(R.id.das)).setOnClickListener(this);
+		((Button) findViewById(R.id.die)).setOnClickListener(this);
+
 	}
 
 	public void onClick(View view) {
-		// TODO Auto-generated method stub
 		switch (view.getId()) {
 		case R.id.der: {
-			handleResponse(Gender.MASCULINE);
+			handleResponse(Gender.MASCULINE, view);
 			break;
 		}
 		case R.id.das: {
-			handleResponse(Gender.NEUTRAL);
+			handleResponse(Gender.NEUTRAL, view);
 			break;
 		}
 		case R.id.die: {
-			handleResponse(Gender.FEMININE);
+			handleResponse(Gender.FEMININE, view);
 			break;
-		}			
+		}
 		}
 	}
 
-	public boolean handleResponse(Gender gender) {
+	public boolean handleResponse(Gender gender, View view) {
 		boolean correct = gender.equals(currentGender);
-		
+
 		totalAttempts++;
-		
-		if (correct)
-		{			
+
+		if (correct) {
 			outputTextView.setVisibility(0);
 			outputTextView.setText("");
 
-			//showTextToClipboardNotification("OK.");
-			
+			// showTextToClipboardNotification("OK.");
+
 			correctAttempts++;
 			consecutive++;
 			updateTotalResult();
 			updateConsecutiveResult();
-			
-			
-			
+
 			initTest();
-		}
-		else
-		{
+		} else {
 			outputTextView.setVisibility(1);
 			outputTextView.setText("Wrong, try again.");
-			
-			consecutive=0;
-			//showTextToClipboardNotification("Wrong.");
+
+			consecutive = 0;
+			// showTextToClipboardNotification("Wrong.");
+
+			view.setEnabled(false);
 
 		}
-		
+
 		updateTotalResult();
 		updateConsecutiveResult();
-		
-		
+
 		return correct;
 	}
 
@@ -142,71 +136,67 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	public enum Gender {
 		MASCULINE, FEMININE, NEUTRAL
 	}
-	
-	
+
 	//
-	public void initTest()
-	{
-		
+	public void initTest() {
+
 		Set<String> keySet = words.keySet();
-		List<String> keyList= new Vector<String>();
+		List<String> keyList = new Vector<String>();
 		keyList.addAll(keySet);
 		Collections.shuffle(keyList);
-		this.currentWord = keyList.get(0);	
-		this.currentGender=words.get(currentWord);
-		this.wordTextView.setText(currentWord);		
+		this.currentWord = keyList.get(0);
+		this.currentGender = words.get(currentWord);
+		this.wordTextView.setText(currentWord);
+		// reset all buttons
+		((Button) findViewById(R.id.der)).setEnabled(true);
+		((Button) findViewById(R.id.das)).setEnabled(true);
+		((Button) findViewById(R.id.die)).setEnabled(true);
+		
+		
+		
+
 	}
-	
-	public void updateTotalResult()
-	{
-		totalResultTextView.setText("total: "+correctAttempts.toString()+"/"+totalAttempts.toString());
+
+	public void updateTotalResult() {
+		totalResultTextView.setText("total: " + correctAttempts.toString()
+				+ "/" + totalAttempts.toString());
 	}
-	
-	public void updateConsecutiveResult()
-	{
-		consecutiveResultTextView.setText("consecutive: "+consecutive.toString());
+
+	public void updateConsecutiveResult() {
+		consecutiveResultTextView.setText("consecutive: "
+				+ consecutive.toString());
 	}
-	
-	private void loadMap() throws IOException
-	{
+
+	private void loadMap() throws IOException {
 		words = new HashMap<String, GermanGenderQuiz.Gender>();
 
-		
 		InputStream in = this.getClass().getResourceAsStream("words_v0-1.txt");
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		 String strLine;
-		while ((strLine = br.readLine()) != null)   {
+		String strLine;
+		while ((strLine = br.readLine()) != null) {
 			String[] split = strLine.split("\t", 2);
-			if (split[0].equalsIgnoreCase("der"))
-			{
+			if (split[0].equalsIgnoreCase("der")) {
 				words.put(split[1], Gender.MASCULINE);
-			}
-			else if (split[0].equalsIgnoreCase("das"))
-			{
+			} else if (split[0].equalsIgnoreCase("das")) {
 				words.put(split[1], Gender.NEUTRAL);
-			}
-			else if (split[0].equalsIgnoreCase("die"))
-			{
+			} else if (split[0].equalsIgnoreCase("die")) {
 				words.put(split[1], Gender.FEMININE);
 			}
-		}		
+		}
 	}
-	
-	private void loadMap2()
-	{
 
-			words = new HashMap<String, GermanGenderQuiz.Gender>();
-			words.put("Fall", Gender.MASCULINE);
-			words.put("Hund", Gender.MASCULINE);
-			words.put("Tisch", Gender.MASCULINE);
-			words.put("Gebäude", Gender.NEUTRAL);
-			words.put("Geld", Gender.NEUTRAL);
-			words.put("Ding", Gender.NEUTRAL);
-			words.put("Versicherung", Gender.FEMININE);
-			words.put("Stadt", Gender.FEMININE);
-			words.put("Macht", Gender.FEMININE);
+	private void loadMap2() {
+
+		words = new HashMap<String, GermanGenderQuiz.Gender>();
+		words.put("Fall", Gender.MASCULINE);
+		words.put("Hund", Gender.MASCULINE);
+		words.put("Tisch", Gender.MASCULINE);
+		words.put("Gebäude", Gender.NEUTRAL);
+		words.put("Geld", Gender.NEUTRAL);
+		words.put("Ding", Gender.NEUTRAL);
+		words.put("Versicherung", Gender.FEMININE);
+		words.put("Stadt", Gender.FEMININE);
+		words.put("Macht", Gender.FEMININE);
 	}
-	
-	
 
 }

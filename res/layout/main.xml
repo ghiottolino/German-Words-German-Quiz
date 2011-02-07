@@ -1,73 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-android:id="@+id/widget32"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:orientation="vertical"
->
-<TextView
-android:id="@+id/word"
-android:layout_width="fill_parent"
-android:layout_height="60px"
-android:text="@string/hello"
-android:textSize="40px"
-android:gravity="center_horizontal"
->
-</TextView>
-<Button
-android:id="@+id/der"
-android:layout_width="fill_parent"
-android:layout_height="100px"
-android:textSize="25px"
-android:text="der"
->
-</Button>
-<Button
-android:id="@+id/das"
-android:layout_width="fill_parent"
-android:layout_height="100px"
-android:textSize="25px"
-android:text="das"
->
-</Button>
-<Button
-android:id="@+id/die"
-android:layout_width="fill_parent"
-android:layout_height="100px"
-android:textSize="25px"
-android:text="die"
->
-</Button>
-<TextView
-android:id="@+id/output"
-android:layout_width="fill_parent"
-android:layout_height="30px"
-android:text="@string/hello"
-android:textSize="15px"
-android:textStyle="bold"
-android:textColor="#cc0000"
-android:gravity="center_horizontal"
->
-</TextView>
-<TextView
-android:id="@+id/totalResult"
-android:layout_width="fill_parent"
-android:layout_height="30px"
-android:text="@string/hello"
-android:textSize="15px"
-android:textStyle="bold"
-android:gravity="center_horizontal"
->
-</TextView>
-<TextView
-android:id="@+id/consecutiveResult"
-android:layout_width="fill_parent"
-android:layout_height="30px"
-android:text="@string/hello"
-android:textSize="15px"
-android:textStyle="bold"
-android:gravity="center_horizontal"
->
-</TextView>
+<LinearLayout android:id="@+id/widget32"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical">
+	<TextView android:id="@+id/word" android:layout_width="fill_parent"
+		android:layout_height="60px" android:text="@string/hello"
+		android:textSize="40px" android:gravity="center_horizontal">
+	</TextView>
+	<Button android:id="@+id/der" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:textSize="25px" android:text="der" android:layout_weight="1">
+	</Button>
+	<Button android:id="@+id/das" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:textSize="25px" android:text="das" android:layout_weight="1">
+	</Button>
+	<Button android:id="@+id/die" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:textSize="25px" android:text="die" android:layout_weight="1">
+	</Button>
+	<TextView android:id="@+id/output" android:layout_width="fill_parent"
+		android:layout_height="30px" android:text="@string/hello"
+		android:textSize="15px" android:textStyle="bold" android:textColor="#cc0000"
+		android:gravity="center_horizontal">
+	</TextView>
+	<TextView android:id="@+id/totalResult" android:layout_width="fill_parent"
+		android:layout_height="30px" android:text="@string/hello"
+		android:textSize="15px" android:textStyle="bold" android:gravity="center_horizontal">
+	</TextView>
+	<TextView android:id="@+id/consecutiveResult"
+		android:layout_width="fill_parent" android:layout_height="30px"
+		android:text="@string/hello" android:textSize="15px"
+		android:textStyle="bold" android:gravity="center_horizontal">
+	</TextView>
 </LinearLayout>
