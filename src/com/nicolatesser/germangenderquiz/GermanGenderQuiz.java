@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
@@ -24,6 +25,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+// TODO : add a record mechanism
+// TODO : add many dictionaries (basic, advances, animals)
 
 public class GermanGenderQuiz extends Activity implements OnClickListener {
 	/** Called when the activity is first created. */
@@ -42,11 +46,17 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 
 	private Map<String, Gender> words;
 
+	private List<String> recentWrongAnsweredWords;
+
+	private static final Integer RECENT_WRONG_ANSWERED_WORDS_SIZE = 10;
+
 	private Integer consecutive = 0;
 
 	private Integer correctAttempts = 0;
 
 	private Integer totalAttempts = 0;
+
+	private Random rg = new Random();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,10 +68,12 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		outputTextView = (TextView) findViewById(R.id.output);
 		outputTextView.setVisibility(0);
 		outputTextView.setText("");
+		recentWrongAnsweredWords = new Vector<String>();
+
 		try {
 			loadMap();
 		} catch (IOException e) {
-			loadMap2();
+			throw new RuntimeException("Could not load the dictionary");
 		}
 		initTest();
 
@@ -71,6 +83,7 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		((Button) findViewById(R.id.der)).setOnClickListener(this);
 		((Button) findViewById(R.id.das)).setOnClickListener(this);
 		((Button) findViewById(R.id.die)).setOnClickListener(this);
+
 
 	}
 
@@ -99,24 +112,22 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		if (correct) {
 			outputTextView.setVisibility(0);
 			outputTextView.setText("");
-
 			// showTextToClipboardNotification("OK.");
-
 			correctAttempts++;
 			consecutive++;
 			updateTotalResult();
 			updateConsecutiveResult();
-
 			initTest();
 		} else {
 			outputTextView.setVisibility(1);
 			outputTextView.setText("Wrong, try again.");
-
 			consecutive = 0;
 			// showTextToClipboardNotification("Wrong.");
-
 			view.setEnabled(false);
-
+			if (!recentWrongAnsweredWords.contains(currentWord))
+			{
+				recentWrongAnsweredWords.add(currentWord);
+			}
 		}
 
 		updateTotalResult();
@@ -140,21 +151,52 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	//
 	public void initTest() {
 
-		Set<String> keySet = words.keySet();
-		List<String> keyList = new Vector<String>();
-		keyList.addAll(keySet);
-		Collections.shuffle(keyList);
-		this.currentWord = keyList.get(0);
+		String word = "";
+
+		// if there are more than 10 words in the recentWrongAnsweredWords list
+		// then retrieves one of that words
+		if (shouldChooseFromWrongAnswers()) {
+			word = getWordFromWrongAnswers();
+		} else {
+			word = getWordFromDictionary();
+		}
+
+		this.currentWord = word;
 		this.currentGender = words.get(currentWord);
 		this.wordTextView.setText(currentWord);
 		// reset all buttons
 		((Button) findViewById(R.id.der)).setEnabled(true);
 		((Button) findViewById(R.id.das)).setEnabled(true);
 		((Button) findViewById(R.id.die)).setEnabled(true);
-		
-		
-		
+	}
 
+	public String getWordFromWrongAnswers() {
+		Collections.shuffle(recentWrongAnsweredWords);
+		String word = recentWrongAnsweredWords.get(0);
+		recentWrongAnsweredWords.remove(word);
+		return word;
+	}
+
+	public String getWordFromDictionary() {
+		Set<String> keySet = words.keySet();
+		List<String> keyList = new Vector<String>();
+		keyList.addAll(keySet);
+		Collections.shuffle(keyList);
+		return keyList.get(0);
+	}
+
+	public boolean shouldChooseFromWrongAnswers() {
+		if (recentWrongAnsweredWords.size() > RECENT_WRONG_ANSWERED_WORDS_SIZE) {
+			return true;
+		}
+
+		int random = rg.nextInt(RECENT_WRONG_ANSWERED_WORDS_SIZE);
+
+		if (random < recentWrongAnsweredWords.size()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public void updateTotalResult() {
@@ -183,20 +225,6 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 				words.put(split[1], Gender.FEMININE);
 			}
 		}
-	}
-
-	private void loadMap2() {
-
-		words = new HashMap<String, GermanGenderQuiz.Gender>();
-		words.put("Fall", Gender.MASCULINE);
-		words.put("Hund", Gender.MASCULINE);
-		words.put("Tisch", Gender.MASCULINE);
-		words.put("Gebäude", Gender.NEUTRAL);
-		words.put("Geld", Gender.NEUTRAL);
-		words.put("Ding", Gender.NEUTRAL);
-		words.put("Versicherung", Gender.FEMININE);
-		words.put("Stadt", Gender.FEMININE);
-		words.put("Macht", Gender.FEMININE);
 	}
 
 }
