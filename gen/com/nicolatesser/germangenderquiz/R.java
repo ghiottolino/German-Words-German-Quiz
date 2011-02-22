@@ -16,10 +16,11 @@ public final class R {
     }
     public static final class id {
         public static final int consecutiveResult=0x7f050007;
-        public static final int das=0x7f050003;
+        public static final int das=0x7f050004;
         public static final int der=0x7f050002;
-        public static final int die=0x7f050004;
+        public static final int die=0x7f050003;
         public static final int output=0x7f050005;
+        public static final int record=0x7f050008;
         public static final int totalResult=0x7f050006;
         public static final int widget32=0x7f050000;
         public static final int word=0x7f050001;

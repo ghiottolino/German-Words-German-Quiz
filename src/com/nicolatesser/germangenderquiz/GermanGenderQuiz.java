@@ -14,8 +14,11 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.opengl.Visibility;
@@ -31,6 +34,11 @@ import android.widget.Toast;
 
 public class GermanGenderQuiz extends Activity implements OnClickListener {
 	/** Called when the activity is first created. */
+	
+	public static final String PREFS_NAME = "GERMAN_GENDER_QUIZ_RECORD";
+	
+	public static final String RECORD_PREF_KEY = "RECORD";
+	
 
 	private TextView wordTextView;
 
@@ -40,6 +48,9 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 
 	private TextView consecutiveResultTextView;
 
+	private TextView recordTextView;
+
+	
 	private Gender currentGender;
 
 	private String currentWord;
@@ -57,6 +68,8 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	private Integer totalAttempts = 0;
 
 	private Random rg = new Random();
+	
+	private Integer currentRecord = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -65,11 +78,14 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		wordTextView = (TextView) findViewById(R.id.word);
 		totalResultTextView = (TextView) findViewById(R.id.totalResult);
 		consecutiveResultTextView = (TextView) findViewById(R.id.consecutiveResult);
+		recordTextView = (TextView) findViewById(R.id.record);
 		outputTextView = (TextView) findViewById(R.id.output);
 		outputTextView.setVisibility(0);
 		outputTextView.setText("");
 		recentWrongAnsweredWords = new Vector<String>();
-
+		currentRecord = getRecord();
+		printCurrentRecord();
+		
 		try {
 			loadMap();
 		} catch (IOException e) {
@@ -117,6 +133,7 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 			consecutive++;
 			updateTotalResult();
 			updateConsecutiveResult();
+			updateRecord();
 			initTest();
 		} else {
 			outputTextView.setVisibility(1);
@@ -225,6 +242,42 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 				words.put(split[1], Gender.FEMININE);
 			}
 		}
+	}
+	
+	// RECORD
+	
+	protected void updateRecord()
+	{
+		if (consecutive>currentRecord)
+		{
+			this.currentRecord=consecutive;
+			saveRecord(currentRecord);
+			showTextToClipboardNotification("Congratulations, you set a new record: "+currentRecord);
+			printCurrentRecord();
+		}
+	}
+	
+
+	public void printCurrentRecord() {
+		recordTextView.setText("record: "
+				+ currentRecord.toString());
+	}
+	
+	protected Integer getRecord() {
+
+    	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+    	int record = settings.getInt(RECORD_PREF_KEY, 0);
+    	return record;
+	}
+	
+	protected void saveRecord(Integer record) {
+
+    	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putInt(RECORD_PREF_KEY, record);
+
+		// Commit the edits!
+		boolean commit = editor.commit();
 	}
 
 }

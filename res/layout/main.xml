@@ -8,26 +8,33 @@
 		android:textSize="40px" android:gravity="center_horizontal">
 	</TextView>
 	<Button android:id="@+id/der" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:textSize="25px" android:text="der" android:layout_weight="1">
-	</Button>
-	<Button android:id="@+id/das" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:textSize="25px" android:text="das" android:layout_weight="1">
+		android:layout_height="wrap_content" android:textSize="25px"
+		android:text="der" android:layout_weight="1">
 	</Button>
 	<Button android:id="@+id/die" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:textSize="25px" android:text="die" android:layout_weight="1">
+		android:layout_height="wrap_content" android:textSize="25px"
+		android:text="die" android:layout_weight="1">
+	</Button>
+	<Button android:id="@+id/das" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:textSize="25px"
+		android:text="das" android:layout_weight="1">
 	</Button>
 	<TextView android:id="@+id/output" android:layout_width="fill_parent"
-		android:layout_height="30px" android:text="@string/hello"
+		android:layout_height="25px" android:text="@string/hello"
 		android:textSize="15px" android:textStyle="bold" android:textColor="#cc0000"
 		android:gravity="center_horizontal">
 	</TextView>
 	<TextView android:id="@+id/totalResult" android:layout_width="fill_parent"
-		android:layout_height="30px" android:text="@string/hello"
+		android:layout_height="25px" android:text="@string/hello"
 		android:textSize="15px" android:textStyle="bold" android:gravity="center_horizontal">
 	</TextView>
 	<TextView android:id="@+id/consecutiveResult"
-		android:layout_width="fill_parent" android:layout_height="30px"
+		android:layout_width="fill_parent" android:layout_height="25px"
 		android:text="@string/hello" android:textSize="15px"
 		android:textStyle="bold" android:gravity="center_horizontal">
+	</TextView>
+	<TextView android:id="@+id/record" android:layout_width="fill_parent"
+		android:layout_height="25px" android:text="@string/hello"
+		android:textSize="15px" android:textStyle="bold" android:gravity="center_horizontal">
 	</TextView>
 </LinearLayout>
