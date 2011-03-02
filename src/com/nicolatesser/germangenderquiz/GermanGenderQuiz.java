@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.Vector;
 
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,13 +24,15 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.opengl.Visibility;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-// TODO : add a record mechanism
 // TODO : add many dictionaries (basic, advances, animals)
 
 public class GermanGenderQuiz extends Activity implements OnClickListener {
@@ -279,5 +282,32 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		// Commit the edits!
 		boolean commit = editor.commit();
 	}
+	
+	
+	// MENU
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.settings_menu, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		 case R.id.settings:
+			 // do something
+			 Intent myIntent = new Intent(this, SettingsActivity.class);
+             startActivityForResult(myIntent, 0);
+		 return true;
+
+
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
 
 }

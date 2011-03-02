@@ -2,4 +2,7 @@
 <resources>
     <string name="hello">Hello World, GermanGenderQuiz!</string>
     <string name="app_name">German Words Gender Quiz</string>
+    <string name="settings">Settings</string>
+    <string name="play">Back to the game</string>
+    
 </resources>
