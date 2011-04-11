@@ -103,7 +103,8 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		((Button) findViewById(R.id.das)).setOnClickListener(this);
 		((Button) findViewById(R.id.die)).setOnClickListener(this);
 
-
+		// add the possibilities to use sharedsettings to dictionary service
+		DictionaryService.getInstance().addSharedSettings( getSharedPreferences(PREFS_NAME, 0));
 	}
 
 	public void onClick(View view) {

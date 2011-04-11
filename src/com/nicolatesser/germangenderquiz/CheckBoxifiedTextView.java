@@ -24,6 +24,7 @@
 package com.nicolatesser.germangenderquiz;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,6 +37,8 @@ public class CheckBoxifiedTextView extends LinearLayout {
      private TextView mText;
      private CheckBox mCheckBox;
      private CheckBoxifiedText mCheckBoxText;
+     
+
      
      public CheckBoxifiedTextView(Context context, CheckBoxifiedText aCheckBoxifiedText) {
           super(context);
@@ -87,10 +90,13 @@ public class CheckBoxifiedTextView extends LinearLayout {
      public void setText(String words) {
           mText.setText(words);
      }
-     public void setCheckBoxState(boolean bool)
+     public void setCheckBoxState(boolean checked)
      {
-    	 mCheckBox.setChecked(bool);
-    	 mCheckBoxText.setChecked(bool);
+    	 mCheckBox.setChecked(checked);
+    	 mCheckBoxText.setChecked(checked);
+    	 
+    	 
+    	 DictionaryService.getInstance().setDictionary(mCheckBoxText.getShortName(), checked);
      }
      
      public boolean getCheckBoxState()
@@ -98,6 +104,10 @@ public class CheckBoxifiedTextView extends LinearLayout {
     	 return mCheckBoxText.getChecked();
      }
      
+ 
+     
+     
+ 	 
      
 
      

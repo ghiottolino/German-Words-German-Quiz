@@ -32,11 +32,13 @@ import android.util.Log;
 public class CheckBoxifiedText implements Comparable<CheckBoxifiedText>{
    
      private String mText = "";
+     private String shortName = "";
      private boolean mChecked;    
-     public CheckBoxifiedText(String text, boolean checked) {
+     public CheckBoxifiedText(String text, String shortName,  boolean checked) {
     	 /* constructor */ 
           mText = text;
           mChecked = checked;
+          this.shortName = shortName;
      }
      public void setChecked(boolean value)
      {
@@ -50,7 +52,12 @@ public class CheckBoxifiedText implements Comparable<CheckBoxifiedText>{
           return mText;
      }
      
-     public void setText(String text) {
+     
+     
+     public String getShortName() {
+		return shortName;
+	}
+	public void setText(String text) {
           mText = text;
      }
 

@@ -53,9 +53,12 @@ public class SettingsActivity extends Activity{
 	/** Called when the activity is first created. */
 
 	public static final String PREFS_NAME = "GERMAN_GENDER_QUIZ_RECORD";
-
 	public static final String RECORD_PREF_KEY = "RECORD";
+	public static final String DICTIONARY_PREF_KEY = "DICT_";
 
+	
+	
+	
 	private TextView mTextView;
 	private ListView mListView;
 	private CheckBoxifiedTextListAdapter adapter;
@@ -72,23 +75,24 @@ public class SettingsActivity extends Activity{
 
 		mTextView = (TextView) findViewById(R.id.text);
 		mListView = (ListView) findViewById(R.id.list);
-		List<String> dictionaries = getDictionaries();
 
 		adapter = new CheckBoxifiedTextListAdapter(this);
-		for (int k = 0; k < dictionaries.size(); k++) {
-			adapter.addItem(new CheckBoxifiedText(dictionaries.get(k), false));
+		
+		
+		for (Dictionary dictionary : Dictionary.values()) {
+			
+			String displayName = dictionary.getDisplayName();
+			String shortName = dictionary.getShortName();
+			
+			boolean checked = DictionaryService.getInstance().getChecked(shortName);
+			adapter.addItem(new CheckBoxifiedText(displayName,shortName, checked));
 		}
 		// Display it
 		mListView.setAdapter(adapter);
 
 	}
 
-	protected List<String> getDictionaries() {
-		List<String> dictionaries = new Vector<String>();
-		dictionaries.add(" Basic (circa 450 words)");
-		dictionaries.add(" Advanced (3000 words)");
-		return dictionaries;
-	}
+	
 
 	// MENU
 
@@ -116,4 +120,9 @@ public class SettingsActivity extends Activity{
 		}
 	}
 
+	
+	
+	
+	
+	
 }
