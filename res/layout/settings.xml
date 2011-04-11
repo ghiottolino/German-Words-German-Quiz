@@ -11,10 +11,12 @@
             android:text="@string/settings"
             android:background="@android:drawable/title_bar"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content" 
+            android:focusable="true"/>
     <ListView
             android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:focusable="true"/>
 </LinearLayout>
