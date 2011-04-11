@@ -5,8 +5,7 @@ import java.util.List;
 public enum Dictionary {
 
 	BASIC ("Basic","Basic (circa 450 words)","words_v0-1.txt",true),
-	
-	ADVANCED("Advanced"," Advanced (3000 words)","",false);
+	ADVANCED("Advanced"," Advanced (3000 words)","words_v1.txt",false);
 	
 	private String shortName;
 	private String displayName;
@@ -22,7 +21,6 @@ public enum Dictionary {
 		this.displayName= displayName;
 		this.isDefault=isDefault;
 	}
-
 
 	public String getShortName() {
 		return shortName;
@@ -74,8 +72,6 @@ public enum Dictionary {
 		}
 		return null;
 	}
-	
-	
 	
 	public static String serialize (List<Dictionary> dictionaries)
 	{

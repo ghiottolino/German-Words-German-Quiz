@@ -42,6 +42,14 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	
 	public static final String RECORD_PREF_KEY = "RECORD";
 	
+	public static final String CONSECUTIVE_PREF_KEY = "CONSECUTIVE";
+	
+	public static final String TOTAL_PREF_KEY = "TOTAL";
+	
+	public static final String CORRECT_PREF_KEY = "CORRECT";
+	
+	
+	
 	public static final String DICTIONARIES_PREF_KEY = "DICTIONARIES";
 	
 	private TextView wordTextView;
@@ -78,6 +86,10 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		// add the possibilities to use sharedsettings to dictionary service
+		DictionaryService.getInstance().addSharedSettings( getSharedPreferences(PREFS_NAME, 0));
+		
 		wordTextView = (TextView) findViewById(R.id.word);
 		totalResultTextView = (TextView) findViewById(R.id.totalResult);
 		consecutiveResultTextView = (TextView) findViewById(R.id.consecutiveResult);
@@ -85,16 +97,14 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		outputTextView = (TextView) findViewById(R.id.output);
 		outputTextView.setVisibility(0);
 		outputTextView.setText("");
-		recentWrongAnsweredWords = new Vector<String>();
-		currentRecord = getRecord();
-		printCurrentRecord();
 		
-		try {
-			loadMap();
-		} catch (IOException e) {
-			throw new RuntimeException("Could not load the dictionary");
-		}
-		initTest();
+		consecutive =  getFieldInPreferences(CONSECUTIVE_PREF_KEY);
+		correctAttempts =  getFieldInPreferences(CORRECT_PREF_KEY);
+		totalAttempts =  getFieldInPreferences(TOTAL_PREF_KEY);
+		currentRecord = getFieldInPreferences(RECORD_PREF_KEY);
+		
+		printCurrentRecord();
+
 
 		updateTotalResult();
 		updateConsecutiveResult();
@@ -102,10 +112,23 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		((Button) findViewById(R.id.der)).setOnClickListener(this);
 		((Button) findViewById(R.id.das)).setOnClickListener(this);
 		((Button) findViewById(R.id.die)).setOnClickListener(this);
-
-		// add the possibilities to use sharedsettings to dictionary service
-		DictionaryService.getInstance().addSharedSettings( getSharedPreferences(PREFS_NAME, 0));
 	}
+	
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		try {
+			loadDictionaries();
+		} catch (IOException e) {
+			throw new RuntimeException("Could not load dictionary");
+		}
+		recentWrongAnsweredWords = new Vector<String>();
+		initTest();
+
+	}
+	
+	
 
 	public void onClick(View view) {
 		switch (view.getId()) {
@@ -185,6 +208,7 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		this.currentWord = word;
 		this.currentGender = words.get(currentWord);
 		this.wordTextView.setText(currentWord);
+
 		// reset all buttons
 		((Button) findViewById(R.id.der)).setEnabled(true);
 		((Button) findViewById(R.id.das)).setEnabled(true);
@@ -199,6 +223,12 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	}
 
 	public String getWordFromDictionary() {
+		
+		if (words.size()==0)
+		{
+			return "";
+		}
+		
 		Set<String> keySet = words.keySet();
 		List<String> keyList = new Vector<String>();
 		keyList.addAll(keySet);
@@ -207,6 +237,11 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	}
 
 	public boolean shouldChooseFromWrongAnswers() {
+		if  ((recentWrongAnsweredWords==null)||(recentWrongAnsweredWords.size()==0))
+		{
+			return false;
+		}
+		
 		if (recentWrongAnsweredWords.size() > RECENT_WRONG_ANSWERED_WORDS_SIZE) {
 			return true;
 		}
@@ -223,17 +258,40 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	public void updateTotalResult() {
 		totalResultTextView.setText("total: " + correctAttempts.toString()
 				+ "/" + totalAttempts.toString());
+
+		saveFieldInPreferences(CORRECT_PREF_KEY, correctAttempts);
+		saveFieldInPreferences(TOTAL_PREF_KEY, totalAttempts);
+
 	}
 
 	public void updateConsecutiveResult() {
 		consecutiveResultTextView.setText("consecutive: "
 				+ consecutive.toString());
+		
+		saveFieldInPreferences(CONSECUTIVE_PREF_KEY, consecutive);
+		
 	}
-
-	private void loadMap() throws IOException {
+	
+	private void loadDictionaries()  throws IOException
+	{
+		
 		words = new HashMap<String, GermanGenderQuiz.Gender>();
+		
+		for (Dictionary dictionary : Dictionary.values())
+		{
+			String shortName = dictionary.getShortName();
+			if (DictionaryService.getInstance().getChecked(shortName))
+			{
+				loadMap(dictionary.getFileName());					
+			}
+		}
+	}
+	
 
-		InputStream in = this.getClass().getResourceAsStream("words_v0-1.txt");
+	private void loadMap(String fileName) throws IOException {
+		
+
+		InputStream in = this.getClass().getResourceAsStream(fileName);
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		String strLine;
 		while ((strLine = br.readLine()) != null) {
@@ -255,7 +313,7 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		if (consecutive>currentRecord)
 		{
 			this.currentRecord=consecutive;
-			saveRecord(currentRecord);
+			saveFieldInPreferences(RECORD_PREF_KEY,currentRecord);
 			showTextToClipboardNotification("Congratulations, you set a new record: "+currentRecord);
 			printCurrentRecord();
 		}
@@ -267,18 +325,18 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 				+ currentRecord.toString());
 	}
 	
-	protected Integer getRecord() {
+	protected Integer getFieldInPreferences(String fieldName) {
 
     	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-    	int record = settings.getInt(RECORD_PREF_KEY, 0);
+    	int record = settings.getInt(fieldName, 0);
     	return record;
 	}
 	
-	protected void saveRecord(Integer record) {
+	protected void saveFieldInPreferences(String fieldName, Integer n) {
 
     	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		SharedPreferences.Editor editor = settings.edit();
-		editor.putInt(RECORD_PREF_KEY, record);
+		editor.putInt(fieldName, n);
 
 		// Commit the edits!
 		boolean commit = editor.commit();

@@ -110,9 +110,7 @@ public class SettingsActivity extends Activity{
 		case R.id.play:
 			// do something
 			Intent myIntent = new Intent(this, GermanGenderQuiz.class);
-			// TODO : how to return withouth starting the activity?
-			// startActivityForResult(myIntent, 0);
-			startActivityIfNeeded(myIntent, 0);
+			startActivity(myIntent);
 			return true;
 
 		default:
