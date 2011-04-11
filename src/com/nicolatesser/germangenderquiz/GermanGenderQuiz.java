@@ -42,7 +42,8 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	
 	public static final String RECORD_PREF_KEY = "RECORD";
 	
-
+	public static final String DICTIONARIES_PREF_KEY = "DICTIONARIES";
+	
 	private TextView wordTextView;
 
 	private TextView outputTextView;
@@ -53,7 +54,6 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 
 	private TextView recordTextView;
 
-	
 	private Gender currentGender;
 
 	private String currentWord;

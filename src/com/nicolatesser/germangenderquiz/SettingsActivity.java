@@ -58,7 +58,6 @@ public class SettingsActivity extends Activity{
 
 	private TextView mTextView;
 	private ListView mListView;
-	// Create CheckBox List Adapter, cbla
 	private CheckBoxifiedTextListAdapter adapter;
 
 	private CheckBox allDictionariesCheckBox = null;
@@ -73,12 +72,7 @@ public class SettingsActivity extends Activity{
 
 		mTextView = (TextView) findViewById(R.id.text);
 		mListView = (ListView) findViewById(R.id.list);
-		// mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		List<String> dictionaries = getDictionaries();
-		// showData(dictionaries);
-		// prepareCheckboxListeners(dictionaries);
-		// prepareCheckboxListeners2(dictionaries);
-		System.out.println("test");
 
 		adapter = new CheckBoxifiedTextListAdapter(this);
 		for (int k = 0; k < dictionaries.size(); k++) {
@@ -91,13 +85,8 @@ public class SettingsActivity extends Activity{
 
 	protected List<String> getDictionaries() {
 		List<String> dictionaries = new Vector<String>();
-		dictionaries.add(" All Dictionaries");
-		dictionaries.add(" Basic");
-		dictionaries.add(" Medium");
-		dictionaries.add(" Advanced");
-		dictionaries.add(" Animals");
-		dictionaries.add(" Nature");
-		dictionaries.add(" Home");
+		dictionaries.add(" Basic (circa 450 words)");
+		dictionaries.add(" Advanced (3000 words)");
 		return dictionaries;
 	}
 
