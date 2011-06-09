@@ -1,6 +1,6 @@
 Title (en): German words gender quiz
 
-Description (en): The quiz consists of guessing the gender of a German word. At every stage you will see a random German noun, and you can guess its gender by clicking on the 3 buttons ('der' for masculine, 'die' for feminine and 'das' for neutral words). The database contains about 450 basic words, and it will be extended in the next releases. While playing no internet access is required.
+Description (en): The quiz consists of guessing the gender of a German word. At every stage you will see a random German noun, and you can guess its gender by clicking on the 3 buttons ('der' for masculine, 'die' for feminine and 'das' for neutral words). The database contains about 450 basic words, and it will be extended in the next releases. While playing no internet access is required. Icons from http://glyphish.com.
 
 Promo Text (en): Test your knowledge of German words gender with this educational game.
 
@@ -15,6 +15,8 @@ VERSION
 0.4 Added record functionality
 
 0.5 Change order of buttons
+
+1.0 Added multiple dictionaries selection, also added "Advanced" dictionary with 50000+ words
 
 INSTRUCTIONS FOR BUILDING
 

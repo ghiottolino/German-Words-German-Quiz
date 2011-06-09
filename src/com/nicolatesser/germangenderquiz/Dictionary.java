@@ -4,8 +4,8 @@ import java.util.List;
 
 public enum Dictionary {
 
-	BASIC ("Basic","Basic (circa 450 words)","words_v0-1.txt",true),
-	ADVANCED("Advanced"," Advanced (3000 words)","words_v1.txt",false);
+	BASIC ("Basic","Basic (450 words)","words_v0-1.txt",true),
+	ADVANCED("Advanced"," Advanced (50000+ words)","chemniz_processed.txt",false);
 	
 	private String shortName;
 	private String displayName;

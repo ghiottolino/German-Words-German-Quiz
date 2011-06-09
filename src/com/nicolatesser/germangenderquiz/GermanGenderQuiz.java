@@ -35,6 +35,8 @@ import android.widget.Toast;
 
 // TODO : add many dictionaries (basic, advances, animals)
 
+// TODO : add a setting, reset game, continue game
+
 public class GermanGenderQuiz extends Activity implements OnClickListener {
 	/** Called when the activity is first created. */
 	
