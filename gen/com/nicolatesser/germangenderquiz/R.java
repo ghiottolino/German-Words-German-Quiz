@@ -25,17 +25,19 @@ public final class R {
         public static final int die=0x7f060003;
         public static final int list=0x7f06000a;
         public static final int output=0x7f060005;
-        public static final int play=0x7f06000b;
+        public static final int play=0x7f06000c;
         public static final int record=0x7f060008;
-        public static final int settings=0x7f06000c;
+        public static final int settings=0x7f06000d;
         public static final int text=0x7f060009;
         public static final int totalResult=0x7f060006;
+        public static final int value=0x7f06000b;
         public static final int widget32=0x7f060000;
         public static final int word=0x7f060001;
     }
     public static final class layout {
         public static final int main=0x7f030000;
         public static final int settings=0x7f030001;
+        public static final int settings_entry=0x7f030002;
     }
     public static final class menu {
         public static final int play_menu=0x7f050000;

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 
@@ -24,6 +25,8 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.opengl.Visibility;
 import android.os.Bundle;
+import android.util.AndroidException;
+import android.util.AndroidRuntimeException;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -69,6 +72,9 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	private String currentWord;
 
 	private Map<String, Gender> words;
+	
+	private Map<String, Gender> tmpWords;
+	
 
 	private List<String> recentWrongAnsweredWords;
 
@@ -197,9 +203,22 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	//
 	public void initTest() {
 
+		int counter=0;
+		while(this.words==null || this.words.size()<20)
+		{
+			//do nothing
+			counter++;
+			if (counter>1000000)
+			{
+				throw new AndroidRuntimeException("The application is taking too long to load the dictionaries");
+			}
+		}
+		
+		System.out.println("counter = "+counter);
+		
 		String word = "";
 
-		// if there are more than 10 words in the recentWrongAnsweredWords list
+		// if there are more wordsthan 10 words in the recentWrongAnsweredWords list
 		// then retrieves one of that words
 		if (shouldChooseFromWrongAnswers()) {
 			word = getWordFromWrongAnswers();
@@ -224,16 +243,16 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		return word;
 	}
 
-	public String getWordFromDictionary() {
+	public synchronized String getWordFromDictionary() {
 		
 		if (words.size()==0)
 		{
 			return "";
 		}
 		
-		Set<String> keySet = words.keySet();
+		//Set<String> keySet = words.keySet();
 		List<String> keyList = new Vector<String>();
-		keyList.addAll(keySet);
+		keyList.addAll(words.keySet());
 		Collections.shuffle(keyList);
 		return keyList.get(0);
 	}
@@ -276,17 +295,34 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 	
 	private void loadDictionaries()  throws IOException
 	{
+		System.out.println("starting thread");
 		
-		words = new HashMap<String, GermanGenderQuiz.Gender>();
+		new Thread(new Runnable() {
+		    public void run() {
+		    	words = new ConcurrentHashMap<String, GermanGenderQuiz.Gender>();
+		    	tmpWords = new ConcurrentHashMap<String, GermanGenderQuiz.Gender>();
+				
+				for (Dictionary dictionary : Dictionary.values())
+				{
+					String shortName = dictionary.getShortName();
+					if (DictionaryService.getInstance().getChecked(shortName))
+					{
+						try {
+							loadMap(dictionary.getFileName());
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}					
+					}
+				}
+				tmpWords=null;
+				
+		    }
+		  }).start();
+
 		
-		for (Dictionary dictionary : Dictionary.values())
-		{
-			String shortName = dictionary.getShortName();
-			if (DictionaryService.getInstance().getChecked(shortName))
-			{
-				loadMap(dictionary.getFileName());					
-			}
-		}
+		
+		
 	}
 	
 
@@ -296,16 +332,23 @@ public class GermanGenderQuiz extends Activity implements OnClickListener {
 		InputStream in = this.getClass().getResourceAsStream(fileName);
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		String strLine;
-		while ((strLine = br.readLine()) != null) {
-			String[] split = strLine.split("\t", 2);
-			if (split[0].equalsIgnoreCase("der")) {
-				words.put(split[1], Gender.MASCULINE);
-			} else if (split[0].equalsIgnoreCase("das")) {
-				words.put(split[1], Gender.NEUTRAL);
-			} else if (split[0].equalsIgnoreCase("die")) {
-				words.put(split[1], Gender.FEMININE);
+		
+		synchronized (words) {
+			
+			while ((strLine = br.readLine()) != null) {
+				String[] split = strLine.split(" ", 2);
+				if (split[0].equalsIgnoreCase("der")) {
+					words.put(split[1], Gender.MASCULINE);
+				} else if (split[0].equalsIgnoreCase("das")) {
+					words.put(split[1], Gender.NEUTRAL);
+				} else if (split[0].equalsIgnoreCase("die")) {
+					words.put(split[1], Gender.FEMININE);
+				}
+				words = tmpWords;
 			}
 		}
+		
+		
 	}
 	
 	// RECORD
